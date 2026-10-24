@@ -44,3 +44,10 @@ def log_cagri(fonk: Callable[..., Any]) -> Callable[..., Any]:
         print(f"<- {fonk.__name__} = {repr(sonuc)}")
         return sonuc
     return sarmalayici
+  from uzay_oyunu.oyun import yakit_harca
+
+for miktar in [0, 30, 100, -1, 150]:
+    try:
+        print(miktar, "harcama sonrası:", yakit_harca(miktar))
+    except ValueError as hata:
+        print("ValueError:", hata)  
