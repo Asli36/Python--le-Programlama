@@ -1,0 +1,69 @@
+{
+  "gezegenler": ["dünya", "mars", "jüpiter"],
+  "baglantilar": {
+    "dünya": ["mars"],
+    "mars": ["dünya", "jüpiter"],
+    "jüpiter": ["mars"]
+  },
+  "baslangic": "dünya",
+  "yakit": 100
+}
+import json
+from typing import Dict, List, Any
+
+
+def envanter_metni(credits: bool, engines: bool, copilot: bool) -> str:
+    parcalar = []
+    if credits:
+        parcalar.append("bol kredi")
+    if engines:
+        parcalar.append("guclu motor")
+    if copilot:
+        parcalar.append("yetenekli bir pilot")
+
+    if not parcalar:
+        return ""
+    return "Sende: " + ", ".join(parcalar)
+
+
+def hedef_menuosu(hedefler: List[str]) -> str:
+    sonuc = "Nereye gitmek istersin?\n"
+    for i, hedef in enumerate(hedefler, start=1):
+        sonuc += f"[{i}] {hedef}\n"
+    return sonuc.strip()
+
+
+def galaksi_kur(
+    gezegenler: List[str],
+    baglantilar: Dict[str, List[str]],
+    baslangic: str,
+    **kwargs: Any
+) -> Dict[str, Any]:
+    """Galaksi haritasını kurar ve başlangıç durumunu döndürür."""
+    if baslangic not in gezegenler:
+        raise ValueError("Başlangıç gezegeni gezegenler listesinde yok!")
+
+    yakit = kwargs.get("yakit", 50)
+
+    return {
+        "gezegenler": gezegenler,
+        "baglantilar": baglantilar,
+        "konum": baslangic,
+        "yakit": yakit
+    }
+    
+def galaksiyi_dosyadan_yukle(dosya_yolu: str = "uzay_oyunu/galaksi.json") -> Dict[str, Any]:
+    """JSON dosyasından veriyi okuyup galaksi_kur fonksiyonuna iletir."""
+    with open(dosya_yolu, "r", encoding="utf-8") as f:
+        veri = json.load(f)
+    return galaksi_kur(**veri)
+
+
+if __name__ == "__main__":
+    # Test ve örnek kullanım
+    g = galaksiyi_dosyadan_yukle()
+    print("Konum ve Yakıt:", g["konum"], g["yakit"])
+
+    # Varsayılan yakıt testi (yakit verilmezse 50 olmalı)
+    g2 = galaksi_kur(["mars"], {"mars": []}, "mars")
+    print("Varsayılan Yakıt:", g2["yakit"])
